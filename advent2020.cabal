@@ -1,0 +1,36 @@
+name:                advent2020
+version:             0.1.0.0
+-- synopsis:
+-- description:
+homepage:            https://github.com/githubuser/advent#readme
+license:             BSD3
+license-file:        LICENSE
+author:              Author name here
+maintainer:          example@example.com
+copyright:           2020 Author name here
+category:            Web
+build-type:          Simple
+cabal-version:       >=2.0
+extra-source-files:  README.md
+
+
+
+library
+  hs-source-dirs:      common
+  default-language:    Haskell2010
+
+  exposed-modules:
+    Advent
+
+
+  build-depends:
+    base         >= 4.13 && < 4.15,
+    containers   ^>= 0.6.2,
+    megaparsec   ^>= 9.0
+
+
+executable Day01
+  main-is:             Day01.hs
+  build-depends:       advent2020, base
+  hs-source-dirs:      execs
+  default-language:    Haskell2010
