@@ -7,21 +7,21 @@ pub fn load_numbers(filename: &String) -> Vec<i32> {
 }
 fn main() {
     let numbers = load_numbers(&"inputs/input01.txt".to_string());
-    let mut part1: Vec<i32> = vec![];
-    let mut part2: Vec<i32> = vec![];
+    let mut part1: i32 = 0;
+    let mut part2: i32 = 0;
     for x in &numbers
     {
         for y in &numbers{
             if x+y==2020{
-                part1.push(x*y)
+                part1 = x*y;
             }
             for z in &numbers{
                 if x+y+z==2020{
-                    part2.push(x*y*z)
+                    part2=x*y*z;
                 }
             }
         }
     }
-    println!("{:?}", part1[0]);
-    println!("{:?}", part2[0]);
+    println!("{:?}", part1);
+    println!("{:?}", part2);
 }
