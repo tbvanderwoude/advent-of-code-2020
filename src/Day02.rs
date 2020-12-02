@@ -9,13 +9,13 @@ fn main() {
     for cap in re.captures_iter(&text) {
         let val1: usize = cap[1].parse::<usize>().unwrap();
         let val2: usize = cap[2].parse::<usize>().unwrap();
-        let rule: char = cap[3].chars().nth(0).unwrap();
+        let rule: u8 = cap[3].to_string().as_bytes()[0];
         let pass = cap[4].to_string();
-        let count = pass.rmatches(rule).count();
+        let count = pass.rmatches(rule as char).count();
         if count>=val1 && count<=val2{
             part1+=1;
         }
-        if (pass.chars().nth(val1-1).unwrap()==rule)!=(pass.chars().nth(val2-1).unwrap()==rule){
+        if (pass.as_bytes()[val1-1]==rule)!=(pass.as_bytes()[val2-1]==rule){
             part2+=1;
         }
     }
