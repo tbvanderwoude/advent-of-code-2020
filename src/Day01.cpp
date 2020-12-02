@@ -4,23 +4,14 @@
 #include <string>
 using namespace std;
 
-vector<int> get_input()
+int main (int argc, char* argv[])
 {
-  vector<int> numbers;
+  ifstream input_file(argv[1]);
   string line;
-  ifstream myfile ("inputs/input01.txt");
-  if (myfile.is_open()){
-    while ( getline (myfile,line) ) {
-      numbers.push_back(std::stoi(line));
-    }
-    myfile.close();
+  vector<int> lines;
+  while ( getline (input_file,line) ) {
+    lines.push_back(std::stoi(line));
   }
-  return numbers;
-}
-
-int main ()
-{
-  vector<int> lines = get_input();
   int part1 = -1;
   int part2 = -1;
   for (auto x : lines){
