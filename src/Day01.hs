@@ -1,7 +1,4 @@
 module Main (main) where
-
--- import           Advent
-
 main :: IO ()
 main =
   do inp <- map read <$> lines <$> readFile "inputs/input01.txt"
