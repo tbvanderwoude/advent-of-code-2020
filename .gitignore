@@ -3,3 +3,8 @@
 !*.*
 *.o
 *.hi
+
+
+# Added by cargo
+
+/target

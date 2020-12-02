@@ -1,0 +1,17 @@
+[package]
+name = "advent-of-code-2020"
+version = "0.1.0"
+authors = ["Thom van der Woude <tbvanderwoude@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[[bin]]
+name = "Day01"
+path = "src/Day01.rs"
+
+[[bin]]
+name = "Day02"
+path = "src/Day02.rs"
+
+[dependencies]
+regex = ">=1.4.2"
