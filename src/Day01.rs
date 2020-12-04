@@ -1,12 +1,20 @@
 use std::fs;
-pub fn load_numbers(filename: &String) -> Vec<i32> {
-    fs::read_to_string(filename).expect("Something is wrong I can feel it.").
-    split("\n").
-    filter(|x|{x.to_string().parse::<i32>().is_ok()}).
-    map(|x| x.to_string().parse::<i32>().unwrap()).collect()
+#[macro_export]
+macro_rules! aoc {
+    ( $( $x:expr ),* ) => {
+        {
+            let mut temp_vec = Vec::new();
+            $(
+                temp_vec.push($x);
+            )*
+            temp_vec
+        }
+    };
 }
+
 fn main() {
-    let numbers = load_numbers(&"inputs/input01.txt".to_string());
+    let text = fs::read_to_string(&"inputs/input01.txt".to_string()).expect("error reading file");
+    let numbers = text.lines().filter(|x|{x.to_string().parse::<i32>().is_ok()}).map(|x| x.to_string().parse::<i32>().unwrap()).collect::<Vec<i32>>();
     let mut part1: i32 = 0;
     let mut part2: i32 = 0;
     for x in &numbers
