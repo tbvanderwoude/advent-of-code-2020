@@ -15,7 +15,7 @@ fn check_field(name: &str, value: &str)-> bool{
                 ("pid".to_string(),Regex::new(r"^\d{9}$").unwrap())
             ].iter().cloned().collect();
     }
-    return !EXPRESSIONS.contains_key(name)||EXPRESSIONS.get(name).unwrap().is_match(value.as_ref())
+    !EXPRESSIONS.contains_key(name)||EXPRESSIONS.get(name).unwrap().is_match(value.as_ref())
 }
 fn main() {
     let text = fs::read_to_string(&"inputs/input04.txt".to_string()).expect("Something is wrong I can feel it.");
@@ -31,12 +31,9 @@ fn main() {
                 fields.insert(parts[0]);
             }
         }
-        print!("{:?}",fields);
-        if fields.is_superset(&required_set) {
-            count+=1;
-        }
+        count+=fields.is_superset(&required_set) as i32;
     }
-    print!("{}",count)
+    println!("{}",count)
 }
 
 #[cfg(test)]
