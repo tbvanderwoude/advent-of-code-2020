@@ -3,9 +3,6 @@
 !*.*
 *.o
 *.hi
-
-
-# Added by cargo
-
 /target
 /.idea
+__pycache__
