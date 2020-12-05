@@ -21,19 +21,24 @@ fn main() {
     let text = fs::read_to_string(&"inputs/input04.txt".to_string()).expect("Something is wrong I can feel it.");
     let passports= text.split("\n\n").map(|s| s.to_string());
 
-    let mut count = 0;
+    let mut present_count = 0;
+    let mut correct_count = 0;
     let required_set = vec!["byr","iyr","eyr","hgt","hcl","ecl","pid"].into_iter().clone().collect::<HashSet<&str>>();
     for passport in passports{
         let mut fields = HashSet::new();
+        let mut correct_fields = HashSet::new();
         for entry in passport.split_ascii_whitespace() {
             let parts = entry.split(":").collect::<Vec<&str>>();
+            fields.insert(parts[0]);
             if check_field(parts[0],parts[1]){
-                fields.insert(parts[0]);
+                correct_fields.insert(parts[0]);
             }
         }
-        count+=fields.is_superset(&required_set) as i32;
+        present_count+=fields.is_superset(&required_set) as i32;
+        correct_count+=correct_fields.is_superset(&required_set) as i32;
     }
-    println!("{}",count)
+    println!("Passports with all necessary fields present: {}",present_count);
+    println!("Passports with all necessary fields valid: {}",correct_count);
 }
 
 #[cfg(test)]

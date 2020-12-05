@@ -1,5 +1,5 @@
 use std::fs;
-use std::collections::{HashSet, HashMap};
+use std::collections::HashMap;
 
 fn main() {
     let text = fs::read_to_string(&"inputs/input05.txt".to_string()).expect("Error");
@@ -8,6 +8,6 @@ fn main() {
     sids.sort();
     let maxseat = sids.iter().max().unwrap();
     let seat = sids.iter().zip(sids.split_at(1).1.iter()).filter(|(x,y)| **y-**x==2).next().unwrap().0+1;
-    println!("{}",maxseat);
-    println!("{}",seat)
+    println!("Highest seat number that is taken: {}",maxseat);
+    println!("Free seat: {}",seat)
 }

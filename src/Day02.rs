@@ -17,6 +17,6 @@ fn main() {
             part2+=1;
         }
     }
-    println!("{:?}", part1);
-    println!("{:?}", part2);
+    println!("Passwords correct under first policy: {:?}", part1);
+    println!("Passwords correct under second policy: {:?}", part2);
 }
