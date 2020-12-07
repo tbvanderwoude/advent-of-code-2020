@@ -1,36 +1,14 @@
 import re
 
-ps = open("inputs/input07.txt", "r").read().splitlines()
+ps = open("inputs/input07.txt", "r").read().strip().splitlines()
 e1 = re.compile(r'^(\w+ \w+)')
 e2 = re.compile(r'(\d+) (\w+ \w+)')
 rules = {}
-# rules = {(b := ln.replace(" bags", "").replace(" bag", "").split(" contain "))[0]: {c[2::]: int(c[0]) for c in b[1].strip().replace(".", "").split(", ") if c != "no other"} for ln in open("inputs/input07.txt").readlines()}
-
+# what have we learned today? overcomplicating input processing causes bugs, once input is garbled
+# nothing you do with it later can save it, not even implementing three variations of the same thing...
 for s in ps:
-    if s:
-        rules[e1.match(s)[0]] = list(map(lambda x: (int(x[0]),x[1]), e2.findall(s)))
+    rules[e1.match(s)[0]] = list(map(lambda x: (int(x[0]),x[1]), e2.findall(s)))
 
-print(rules)
-
-# colors = ["shiny gold"]
-
-# prev = {"shiny gold" : 1}
-# bags = set()
-# while len(prev) > 0:
-#     prev = set(b for b in rules for p in prev if p in rules[b])
-#     bags |= prev
-# print(len(bags))
-# new_color = True
-#
-# while new_color:
-#     new_color = False
-#     for (color, rule) in rules.items():
-#         for (num,prod_color) in rule:
-#             if prod_color in colors and color not in colors:
-#                 # print("%s also works as it produces %s" % (color, prod_color))
-#                 colors.append(color)
-#                 new_color = True
-#                 # print(colors)
 def bags(root):
     if not rules[root]:
         return 1
@@ -43,6 +21,7 @@ def contains(root, leaf):
     for (num,prod_color) in rules[root]:
         if prod_color!=root and contains(prod_color, leaf):
             contain = True
+            break
     return contain
 
 print(sum([contains(key,"shiny gold") for key in rules])-1)
