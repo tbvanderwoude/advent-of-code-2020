@@ -19,7 +19,6 @@ for (i,n) in enumerate(num[0:len(num)-1]):
     sum = 0
     l_ix = i
     h_ix = i
-    # print(list(enumerate(num[i:],i)))
     for (j, m) in enumerate(num[i:],i):
         if sum>=p1:
             break
@@ -27,7 +26,5 @@ for (i,n) in enumerate(num[0:len(num)-1]):
             h_ix = j
             sum += m
     if sum==p1 and h_ix!=l_ix:
-        print(sum)
         r = num[l_ix:h_ix+1]
         print("The range is indices (%i,%i), the sum: %i"%(l_ix,h_ix,min(r)+max(r)))
-# print(num)
