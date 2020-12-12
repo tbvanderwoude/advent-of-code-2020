@@ -43,12 +43,46 @@ for (i,n) in ms:
 def rot(x,y,n):
     fx = x
     fy = y
-    for i in n/90:
+    s = 1
+    if n<0:
+        s = -1
+        n = abs(n)
+    for i in range(n//90):
         t = fx
-        fx = fy
-        fy = -t
+        fx = fy*s
+        fy = -t*s
     return (fx,fy)
+print(rot(3,1,90))
+print(rot(3,1,-90))
 
 
+sx = 0
+sy = 0
+wx = -10
+wy = 1
+print("Ship: (%i,%i); Waypoint: (%i,%i)" % (sx, sy, wx, wy))
+for (i,n) in ms:
+    move_dir = -1
+    if i == 'L':
+        wx,wy = rot(wx,wy,n)
+    elif i == 'R':
+        wx,wy = rot(wx,wy,-n)
+    elif i == 'F':
+        sx += wx*n
+        sy += wy*n
+    else:
+        if i == 'N':
+            move_dir = Dir.NORTH
+        if i == 'S':
+            move_dir = Dir.SOUTH
+        if i == 'E':
+            move_dir = Dir.EAST
+        if i == 'W':
+            move_dir = Dir.WEST
+        (dx, dy) = deltamap[move_dir]
+        wx+=dx*n
+        wy+=dy*n
+    print("Instruction: (%c %i); Ship: (%i,%i); Waypoint: (%i,%i)"%(i,n,sx,sy,wx,wy))
 
 print(abs(x)+abs(y))
+print(abs(sx)+abs(sy))
