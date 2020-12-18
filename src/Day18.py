@@ -1,4 +1,4 @@
-ls = open("inputs/input18.txt", "r").read().strip().splitlines()
+ls = list(map(lambda l: l.replace(" ",""),open("inputs/input18.txt", "r").read().strip().splitlines()))
 found_bracket = False
 
 
