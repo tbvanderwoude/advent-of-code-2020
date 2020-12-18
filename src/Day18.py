@@ -18,7 +18,6 @@ def match_bracket(s, i):
                 inner_c -= 1
     return open_index, closed_index
 
-
 def flat_sop(s):
     return reduce(lambda x, y: x * y, map(lambda z: sum(map(lambda w: int(w), z.split("+"))), s.split("*")))
 
