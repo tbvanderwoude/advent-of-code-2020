@@ -59,3 +59,5 @@ def simulate_state(ls, n):
 ls = open("inputs/input17.txt", "r").read().strip().splitlines()
 print(simulate_state(ls, 3))
 print(simulate_state(ls, 4))
+print(simulate_state(ls, 2))
+
