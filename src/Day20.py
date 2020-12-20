@@ -8,7 +8,7 @@ class Tile:
         self.bottom = bottom
         self.left = left
 
-parts = list(open("inputs/input20.txt", "r").read().split("\n\n"))
+parts = list(open("inputs/input20.txt", "r").read().replace(".","0").replace("#","1").split("\n\n"))
 print(parts)
 tiles = []
 for part in parts:
@@ -26,5 +26,15 @@ for part in parts:
     print(tid)
     print("Top: {}\nRight: {}\nBottom: {}\nLeft: {}".format(top,right,bottom,left))
     tiles.append(Tile(tid,top,right,bottom,left))
-print(tiles)
-
+target_tile = tiles[0]
+target_side = target_tile.right
+for t in tiles[1:]:
+    for side in [t.top,t.right,t.bottom,t.left]:
+        print("Side: {}".format(side))
+        mirr = list(reversed(side[len(side)//2:]))
+        print(mirr)
+        mirr.extend(reversed(side[:len(side)//2]))
+        print(mirr)
+        print(side)
+        if target_side == side or target_side ==reversed(side) or target_side == mirr:
+            print("A match! A match!")
