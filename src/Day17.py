@@ -17,18 +17,22 @@ def comp_rel(n):
     return neigh
 
 
-def enum_neigh(c,rel_list):
-    return list(map(lambda d: tuple(map(lambda x: x[0]+x[1],zip(list(c),list(d)))),rel_list))
+def enum_neigh(c, rel_list):
+    return list(
+        map(
+            lambda d: tuple(map(lambda x: x[0] + x[1], zip(list(c), list(d)))), rel_list
+        )
+    )
 
 
-def count_active(c, active,rel_list):
-    return len(list(filter(lambda x: x in active, enum_neigh(c,rel_list))))
+def count_active(c, active, rel_list):
+    return len(list(filter(lambda x: x in active, enum_neigh(c, rel_list))))
 
 
-def gen_to_check(active,rel_list):
+def gen_to_check(active, rel_list):
     neigh = deepcopy(active)
     for coord in active:
-        neigh = neigh.union(enum_neigh(coord,rel_list))
+        neigh = neigh.union(enum_neigh(coord, rel_list))
     return neigh
 
 
@@ -38,15 +42,15 @@ def simulate_state(ls, n):
     active = set()
     for (x, l) in enumerate(ls):
         for (y, c) in enumerate(list(l)):
-            if c == '#':
+            if c == "#":
                 coord = [x, y]
                 coord.extend([0] * (n - 2))
                 active.add(tuple(coord))
     for i in range(6):
-        to_check = gen_to_check(active,rel_list)
+        to_check = gen_to_check(active, rel_list)
         new_active = copy(active)
         for coord in to_check:
-            c = count_active(coord, active,rel_list)
+            c = count_active(coord, active, rel_list)
             if coord in active:
                 if not (c == 2 or c == 3):
                     new_active.remove(coord)
@@ -56,8 +60,8 @@ def simulate_state(ls, n):
         active = new_active
     return len(active)
 
+
 ls = open("inputs/input17.txt", "r").read().strip().splitlines()
 print(simulate_state(ls, 3))
 print(simulate_state(ls, 4))
 print(simulate_state(ls, 2))
-
