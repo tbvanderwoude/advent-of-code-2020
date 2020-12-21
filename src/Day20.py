@@ -99,15 +99,17 @@ def get_key(val,d):
 parts = list(
     open("inputs/input20.txt", "r")
     .read()
-    .replace(".", "0")
-    .replace("#", "1")
+    #.replace(".", "0")
+    #.replace("#", "1")
     .split("\n\n")
 )
 tiles = {}
+tile_width = -1
 for part in parts:
     lines = part.splitlines()
     tid = int(lines[0][4:9])
     image = list(map(lambda l: list(l), lines[1:]))
+    tile_width = len(image)
     tiles[tid] = Tile(tid, image,False,0)
 prod = 1
 covered = set()
@@ -136,39 +138,99 @@ print(edges)
 print("Part 1: "+str(prod))
 side = round(sqrt(len(tiles)))
 layout = [[-1 for j in range(side)] for i in range(side)]
-placed = set()
 layout[0][0] = topleft 
-placed.add(topleft)
 print(topleft)
-prev = topleft
-right,down = tuple(edges[topleft].values())
-layout[0][1] = right
-layout[1][0] = down
-x = 1
-y = 1
-for i in range(side-2):
-    e = edges[right]
-    new_key = (get_key(prev,e)+2)%4
-    prev = right
-    right = e[new_key] 
-    x+=1
-    layout[0][x] = right 
-    print(right)
-prev = topleft 
-for i in range(side-2):
-    e = edges[down]
-    new_key = (get_key(prev,e)+2)%4
-    prev = down
-    down = e[new_key] 
-    y+=1
-    layout[y][0] = down 
-    print(down)
-   
+
+placed = set()
+
+for i in range(side):
+    if i==0:
+        corner = topleft
+        right,down = tuple(edges[corner].values())
+    elif i==side-1:
+        r_set = set(edges[right].values())
+        d_set = set(edges[down].values())
+        corner = list(filter(lambda v: v not in placed,r_set.intersection(d_set)))[0]
+        layout[i][i] = corner 
+        placed.add(corner)
+        break;
+    else:
+        # generates new corner with right and down tiles
+        r_set = set(edges[right].values())
+        d_set = set(edges[down].values())
+        corner = list(filter(lambda v: v not in placed,r_set.intersection(d_set)))[0]
+        v1,v2 = tuple(filter(lambda v: v not in placed,edges[corner].values()))
+        if not v1 in r_set:
+            right,down = v1,v2
+        else:
+            right,down = v2,v1
+    print("For iteration %i, the corner, right, down are"%(i))
+    print(corner,right,down)
+    layout[i][i] = corner
+    layout[i][i+1] = right
+    layout[i+1][i] = down
+    placed.add(corner)
+    placed.add(right)
+    placed.add(down)
+    x = i+1
+    y = i+1
+    r_it = right
+    d_it = down
+    prev = corner
+    for j in range(side-2-i):
+        e = edges[r_it]
+        new_key = (get_key(prev,e)+2)%4
+        prev = r_it 
+        r_it = e[new_key] 
+        x+=1
+        layout[i][x] = r_it 
+        placed.add(r_it)
+        print(r_it)
+    prev = corner
+    for j in range(side-2-i):
+        e = edges[d_it]
+        new_key = (get_key(prev,e)+2)%4
+        prev = d_it
+        d_it = e[new_key] 
+        y+=1
+        layout[y][i] = d_it 
+        placed.add(d_it)
+        print(d_it)
+    print(placed)
 print(right,down)
 print(layout)
 print(placed)
+s = ""
 
+for tile_row  in range(side):
+    for row in range(1,tile_width-1):
+        l = ""
+        for tile_col in range(side):
+            tid = layout[tile_row][tile_col]
+            img = tiles[tid].img
+            for col in range(1,tile_width-1):
+                l+=img[row][col] 
+        s+=l+"\n"
+print(s)
+lines = s.splitlines()
+image = list(map(lambda l: list(l), lines))
+tile_width = len(image)
+img_tile = Tile(-1, image,False,0)
+sea_monster = {(0,1),(1,0),(4,0),(5,1),(6,1),(7,0),(10,0),(11,1),(12,1),(13,0),(16,0),(17,1),(18,2),(18,1),(19,1)}
+# draws the sea monster
+monster_str = ""
+for row in range(3):
+    l = ""
+    for col in range(20):
+        if (col,row) in sea_monster:
+            l+="x"
+        else:
+            l+="."
+    monster_str+=l+"\n"
 
+print(monster_str)
+tile_cpy = deepcopy(img_tile)
+for rot_id in range(4):
+    tile_cpy = tile_cpy.rotate_quarter()
+tile_cpy = tile_cpy.flip()
 
-rec_image = [[deepcopy(tiles[topleft].img) for j in range(side)] for i in range(side)]
-# print(rec_image)
