@@ -1,5 +1,6 @@
 from copy import copy, deepcopy
 from enum import Enum
+from math import sqrt
 
 
 class Side(Enum):
@@ -40,7 +41,7 @@ class Tile:
         return Tile(self.tid, new_img)
 
 
-def match_side(i, match_side,tiles):
+def match_side(i, match_side, tiles):
     # print(match_side)
     j = (i + 2) % 4
     for tile in [t for t in tiles if t != match_tile]:
@@ -89,7 +90,7 @@ def matches(match_tile, tiles):
                 flip_cpy = flip_cpy.rotate_quarter()
     print("%i has %i matches" % (match_tile, count))
     print(mtchs)
-    return mtchs 
+    return mtchs
 
 
 parts = list(
@@ -108,16 +109,39 @@ for part in parts:
     print(tid)
     tiles[tid] = Tile(tid, image)
 prod = 1
-covered = set() 
+covered = set()
 current_tid = list(tiles.keys())[0]
 queue = [current_tid]
 print(queue)
+topleft = -1
+edges = {}
 while queue:
-    current_tid = queue.pop()
+    current_tid = queue.pop(0)
     covered.add(current_tid)
-    mtchs = matches(current_tid,tiles)
+    mtchs = matches(current_tid, tiles)
+    edges[current_tid] = mtchs
     queue.extend([v for v in mtchs.values() if not v in covered and not v in queue])
     if len(mtchs) == 2:
-        prod *= current_tid 
+        if 1 in mtchs and 2 in mtchs:
+            topleft = current_tid
+        prod *= current_tid
 
 print(prod)
+print(topleft)
+side = round(sqrt(len(tiles)))
+it = topleft
+i = 0
+while 2 in edges[it]:
+    print(it, edges[it])
+    it = edges[it][2]
+    i += 1
+    j = 0
+    inner_it = it
+    while 1 in edges[inner_it]:
+        j += 1
+        print(inner_it)
+        inner_it = edges[inner_it][1]
+print(edges[topleft])
+print(edges[edges[topleft][1]])
+rec_image = [[deepcopy(tiles[topleft].img) for j in range(side)] for i in range(side)]
+# print(rec_image)
