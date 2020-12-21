@@ -2,7 +2,6 @@ from copy import copy
 
 lines = list(open("inputs/input21.txt", "r").read().strip().splitlines())
 split = list(map(lambda s: tuple(s.split(" (contains ")), lines))
-list_pairs = []
 set_pairs = []
 all_ingrs = set()
 al_ingr_mp = {}
