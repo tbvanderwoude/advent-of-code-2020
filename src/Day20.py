@@ -216,7 +216,8 @@ lines = s.splitlines()
 image = list(map(lambda l: list(l), lines))
 tile_width = len(image)
 img_tile = Tile(-1, image,False,0)
-sea_monster = {(0,1),(1,0),(4,0),(5,1),(6,1),(7,0),(10,0),(11,1),(12,1),(13,0),(16,0),(17,1),(18,2),(18,1),(19,1)}
+img_size = len(image)
+sea_monster = [(0,1),(1,0),(4,0),(5,1),(6,1),(7,0),(10,0),(11,1),(12,1),(13,0),(16,0),(17,1),(18,2),(18,1),(19,1)]
 # draws the sea monster
 monster_str = ""
 for row in range(3):
@@ -231,6 +232,36 @@ for row in range(3):
 print(monster_str)
 tile_cpy = deepcopy(img_tile)
 for rot_id in range(4):
+    img = tile_cpy.img
+    for x in range(img_size-20+1):
+        for y in range(img_size-3+1):
+            is_monster = True
+            for (dx,dy) in sea_monster:
+                if img[y+dy][x+dx]=='.':
+                   is_monster = False
+                   break
+            if is_monster:
+                for (dx,dy) in sea_monster:
+                    img[y+dy][x+dx]="O"
     tile_cpy = tile_cpy.rotate_quarter()
 tile_cpy = tile_cpy.flip()
-
+for rot_id in range(4):
+    img = tile_cpy.img
+    for x in range(img_size-20+1):
+        for y in range(img_size-3+1):
+            is_monster = True
+            for (dx,dy) in sea_monster:
+                if img[y+dy][x+dx]=='.':
+                   is_monster = False
+                   break
+            if is_monster:
+                for (dx,dy) in sea_monster:
+                    img[y+dy][x+dx]="O"
+    tile_cpy = tile_cpy.rotate_quarter()
+print(tile_cpy.img)
+roughness = 0
+for i in range(img_size):
+    for j in range(img_size):
+        if tile_cpy.img[i][j]=='#':
+            roughness+=1
+print(roughness)
