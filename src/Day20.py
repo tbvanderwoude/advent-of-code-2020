@@ -2,14 +2,6 @@ from copy import copy, deepcopy
 from enum import Enum
 from math import sqrt
 
-
-class Side(Enum):
-    TOP = 0
-    RIGHT = 1
-    BOTTOM = 2
-    LEFT = 3
-
-
 class Tile:
     def __init__(self, tid, img,flipped,rot):
         self.tid = tid
@@ -19,10 +11,9 @@ class Tile:
 
     def gen_index(self,i):
         if self.flipped:
-            return (-(i-self.rot))%4
+            return (-(i+self.rot))%4
         else:
             return (i-self.rot)%4
-    
 
     def sides(self):
         top = copy(self.img[0])
@@ -48,7 +39,13 @@ class Tile:
         for i in range(len(new_img)):
             new_img[i] = list(reversed(new_img[i]))
         return Tile(self.tid, new_img,not self.flipped,self.rot)
-
+tile = Tile(42,[[8,0,8],[3,8,1],[8,2,8]],False,0)
+flip = tile.flip()
+indices = [0,1,2,3]
+print(list(map(lambda i: flip.rotate_quarter().gen_index(i),indices))) 
+print(list(map(lambda i: flip.gen_index(i),indices))) 
+print(list(map(lambda i: tile.gen_index(i),indices))) 
+print(list(map(lambda i: tile.rotate_quarter().gen_index(i),indices)))
 def matches(match_tile, tiles):
     count = 0
     mtchs = {}
@@ -104,10 +101,11 @@ while queue:
     if current_tid not in covered:
         covered.add(current_tid)
         mtchs = matches(current_tid, tiles)
-        edges[current_tid] = mtchs
+        g_mtchs = dict(map(lambda x: (tiles[current_tid].gen_index(x[0]),x[1]),mtchs.items()))
+        edges[current_tid] = g_mtchs
         queue.extend([v for v in mtchs.values() if not v in covered])
         if len(mtchs) == 2:
-            if tiles[current_tid].gen_index(1) in mtchs and tiles[current_tid].gen_index(2) in mtchs:
+            if 1 in mtchs and 2 in mtchs:
                 topleft = current_tid
             prod *= current_tid
     
@@ -115,17 +113,17 @@ print(prod)
 print(topleft)
 side = round(sqrt(len(tiles)))
 it = topleft
-inner_it = topleft
 i = 0
 print(edges)
 print(topleft,edges[topleft])
-while 2 in edges[it]:
-    it = edges[it][2]
-    print(it, edges[it])
+while tiles[it].gen_index(2) in edges[it]:
+    it = edges[it][tiles[it].gen_index(2)]
     i += 1
     j = 0 
-    while 1 in edges[inner_it]:
-        inner_it = edges[inner_it][1]
+    inner_it = it 
+    print(it)
+    while tiles[inner_it].gen_index(1) in edges[inner_it]:
+        inner_it = edges[inner_it][tiles[inner_it].gen_index(1)]
         print(inner_it, edges[inner_it])
         j += 1
 print(edges[edges[topleft][1]])
