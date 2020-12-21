@@ -2,28 +2,19 @@ from copy import copy, deepcopy
 from enum import Enum
 from math import sqrt
 
+
 class Tile:
-    def __init__(self, tid, img,flipped,rot):
+    def __init__(self, tid, img, flipped, rot):
         self.tid = tid
         self.img = img
         self.flipped = flipped
         self.rot = rot
 
-    def gen_index(self,i):
+    def gen_index(self, i):
         if self.flipped:
-            return (-i+self.rot)%4
+            return (-i + self.rot) % 4
         else:
-            return (i-self.rot)%4
-
-    def inv_index(self,i):
-        if self.flipped:
-            return (-i-self.rot)%4
-        else:
-            return (i+self.rot)%4
-    def gen_indices(self):
-        return list(map(lambda i: self.gen_index(i),[0,1,2,3]))
-    def inv_indices(self):
-        return list(map(lambda i: self.inv_index(i),[0,1,2,3]))
+            return (i - self.rot) % 4
 
     def sides(self):
         top = copy(self.img[0])
@@ -42,26 +33,14 @@ class Tile:
             new_img[i] = [
                 self.img[len(new_img) - 1 - j][i] for j in range(len(self.img))
             ]
-        return Tile(self.tid, new_img,self.flipped,self.rot+1)
+        return Tile(self.tid, new_img, self.flipped, self.rot + 1)
 
     def flip(self):
         new_img = deepcopy(self.img)
         for i in range(len(new_img)):
             new_img[i] = list(reversed(new_img[i]))
-        return Tile(self.tid, new_img,not self.flipped,self.rot)
+        return Tile(self.tid, new_img, not self.flipped, self.rot)
 
-tile = Tile(42,[[8,0,8],[3,8,1],[8,2,8]],False,0)
-flip = tile.flip()
-indices = [0,1,2,3]
-print(flip.rotate_quarter().gen_indices()) 
-print(flip.gen_indices()) 
-print(tile.gen_indices()) 
-print(tile.rotate_quarter().gen_indices())
-
-print(flip.rotate_quarter().inv_indices()) 
-print(flip.inv_indices()) 
-print(tile.inv_indices()) 
-print(tile.rotate_quarter().inv_indices())
 
 def matches(match_tile, tiles):
     count = 0
@@ -86,23 +65,17 @@ def matches(match_tile, tiles):
                     break
                 tile_cpy = tile_cpy.rotate_quarter()
                 flip_cpy = flip_cpy.rotate_quarter()
-    #print("%i has %i matches" % (match_tile, count))
-    #print(mtchs)
     return mtchs
-def get_key(val,d):
+
+
+def get_key(val, d):
     for k, v in d.items():
-         if val == v:
-             return k
-    return -1 
+        if val == v:
+            return k
+    return -1
 
 
-parts = list(
-    open("inputs/input20.txt", "r")
-    .read()
-    #.replace(".", "0")
-    #.replace("#", "1")
-    .split("\n\n")
-)
+parts = list(open("inputs/input20.txt", "r").read().strip().split("\n\n"))
 tiles = {}
 tile_width = -1
 for part in parts:
@@ -110,11 +83,10 @@ for part in parts:
     tid = int(lines[0][4:9])
     image = list(map(lambda l: list(l), lines[1:]))
     tile_width = len(image)
-    tiles[tid] = Tile(tid, image,False,0)
+    tiles[tid] = Tile(tid, image, False, 0)
 prod = 1
 covered = set()
 current_tid = list(tiles.keys())[0]
-print("Center: %i"%(current_tid))
 center = current_tid
 queue = [current_tid]
 topleft = -1
@@ -132,136 +104,138 @@ while queue:
                 topleft = current_tid
             prod *= current_tid
             corners.add(current_tid)
-assert tiles[center].rot==0
-assert tiles[center].flipped==False
-print(edges)    
-print("Part 1: "+str(prod))
+assert tiles[center].rot == 0
+assert tiles[center].flipped == False
+print("Part 1: " + str(prod))
 side = round(sqrt(len(tiles)))
 layout = [[-1 for j in range(side)] for i in range(side)]
-layout[0][0] = topleft 
-print(topleft)
+layout[0][0] = topleft
 
 placed = set()
 
 for i in range(side):
-    if i==0:
+    if i == 0:
         corner = topleft
-        right,down = tuple(edges[corner].values())
-    elif i==side-1:
+        right, down = tuple(edges[corner].values())
+    elif i == side - 1:
         r_set = set(edges[right].values())
         d_set = set(edges[down].values())
-        corner = list(filter(lambda v: v not in placed,r_set.intersection(d_set)))[0]
-        layout[i][i] = corner 
+        corner = list(filter(lambda v: v not in placed, r_set.intersection(d_set)))[0]
+        layout[i][i] = corner
         placed.add(corner)
-        break;
+        break
     else:
-        # generates new corner with right and down tiles
         r_set = set(edges[right].values())
         d_set = set(edges[down].values())
-        corner = list(filter(lambda v: v not in placed,r_set.intersection(d_set)))[0]
-        v1,v2 = tuple(filter(lambda v: v not in placed,edges[corner].values()))
+        corner = list(filter(lambda v: v not in placed, r_set.intersection(d_set)))[0]
+        v1, v2 = tuple(filter(lambda v: v not in placed, edges[corner].values()))
         if not v1 in r_set:
-            right,down = v1,v2
+            right, down = v1, v2
         else:
-            right,down = v2,v1
-    print("For iteration %i, the corner, right, down are"%(i))
-    print(corner,right,down)
+            right, down = v2, v1
     layout[i][i] = corner
-    layout[i][i+1] = right
-    layout[i+1][i] = down
+    layout[i][i + 1] = right
+    layout[i + 1][i] = down
     placed.add(corner)
     placed.add(right)
     placed.add(down)
-    x = i+1
-    y = i+1
+    x = i + 1
+    y = i + 1
     r_it = right
     d_it = down
     prev = corner
-    for j in range(side-2-i):
+    for j in range(side - 2 - i):
         e = edges[r_it]
-        new_key = (get_key(prev,e)+2)%4
-        prev = r_it 
-        r_it = e[new_key] 
-        x+=1
-        layout[i][x] = r_it 
+        new_key = (get_key(prev, e) + 2) % 4
+        prev = r_it
+        r_it = e[new_key]
+        x += 1
+        layout[i][x] = r_it
         placed.add(r_it)
-        print(r_it)
     prev = corner
-    for j in range(side-2-i):
+    for j in range(side - 2 - i):
         e = edges[d_it]
-        new_key = (get_key(prev,e)+2)%4
+        new_key = (get_key(prev, e) + 2) % 4
         prev = d_it
-        d_it = e[new_key] 
-        y+=1
-        layout[y][i] = d_it 
+        d_it = e[new_key]
+        y += 1
+        layout[y][i] = d_it
         placed.add(d_it)
-        print(d_it)
-    print(placed)
-print(right,down)
-print(layout)
-print(placed)
 s = ""
 
-for tile_row  in range(side):
-    for row in range(1,tile_width-1):
+for tile_row in range(side):
+    for row in range(1, tile_width - 1):
         l = ""
         for tile_col in range(side):
             tid = layout[tile_row][tile_col]
             img = tiles[tid].img
-            for col in range(1,tile_width-1):
-                l+=img[row][col] 
-        s+=l+"\n"
-print(s)
+            for col in range(1, tile_width - 1):
+                l += img[row][col]
+        s += l + "\n"
 lines = s.splitlines()
 image = list(map(lambda l: list(l), lines))
 tile_width = len(image)
-img_tile = Tile(-1, image,False,0)
+img_tile = Tile(-1, image, False, 0)
 img_size = len(image)
-sea_monster = [(0,1),(1,0),(4,0),(5,1),(6,1),(7,0),(10,0),(11,1),(12,1),(13,0),(16,0),(17,1),(18,2),(18,1),(19,1)]
+sea_monster = [
+    (0, 1),
+    (1, 0),
+    (4, 0),
+    (5, 1),
+    (6, 1),
+    (7, 0),
+    (10, 0),
+    (11, 1),
+    (12, 1),
+    (13, 0),
+    (16, 0),
+    (17, 1),
+    (18, 2),
+    (18, 1),
+    (19, 1),
+]
 # draws the sea monster
 monster_str = ""
 for row in range(3):
     l = ""
     for col in range(20):
-        if (col,row) in sea_monster:
-            l+="x"
+        if (col, row) in sea_monster:
+            l += "x"
         else:
-            l+="."
-    monster_str+=l+"\n"
+            l += "."
+    monster_str += l + "\n"
 
-print(monster_str)
 tile_cpy = deepcopy(img_tile)
 for rot_id in range(4):
     img = tile_cpy.img
-    for x in range(img_size-20+1):
-        for y in range(img_size-3+1):
+    for x in range(img_size - 20 + 1):
+        for y in range(img_size - 3 + 1):
             is_monster = True
-            for (dx,dy) in sea_monster:
-                if img[y+dy][x+dx]=='.':
-                   is_monster = False
-                   break
+            for (dx, dy) in sea_monster:
+                if img[y + dy][x + dx] == ".":
+                    is_monster = False
+                    break
             if is_monster:
-                for (dx,dy) in sea_monster:
-                    img[y+dy][x+dx]="O"
+                for (dx, dy) in sea_monster:
+                    img[y + dy][x + dx] = "O"
     tile_cpy = tile_cpy.rotate_quarter()
 tile_cpy = tile_cpy.flip()
 for rot_id in range(4):
     img = tile_cpy.img
-    for x in range(img_size-20+1):
-        for y in range(img_size-3+1):
+    for x in range(img_size - 20 + 1):
+        for y in range(img_size - 3 + 1):
             is_monster = True
-            for (dx,dy) in sea_monster:
-                if img[y+dy][x+dx]=='.':
-                   is_monster = False
-                   break
+            for (dx, dy) in sea_monster:
+                if img[y + dy][x + dx] == ".":
+                    is_monster = False
+                    break
             if is_monster:
-                for (dx,dy) in sea_monster:
-                    img[y+dy][x+dx]="O"
+                for (dx, dy) in sea_monster:
+                    img[y + dy][x + dx] = "O"
     tile_cpy = tile_cpy.rotate_quarter()
-print(tile_cpy.img)
 roughness = 0
 for i in range(img_size):
     for j in range(img_size):
-        if tile_cpy.img[i][j]=='#':
-            roughness+=1
-print(roughness)
+        if tile_cpy.img[i][j] == "#":
+            roughness += 1
+print("Part 2: %i" % (roughness))
