@@ -10,7 +10,7 @@ def rot(ls,n):
 
 def part1(input_str):
     labels = deque(map(int,list(input_str)))
-    moves = 10
+    moves = 100
     c = labels[0]
     picked = []
     for i in range(moves):
@@ -21,7 +21,6 @@ def part1(input_str):
         dest = -1
         for sub in range(1,10):
             cand = (c-sub)%10
-            # # print(cand)
             if cand in labels:
                 dest = cand 
                 break
@@ -48,9 +47,8 @@ def to_str(nxt,start):
     
 def part2(input_str):
     labels = list(map(int,list(input_str)))
-    print(labels)
-    n = 9 
-    m = 10
+    n = 1000000 
+    m = 10000000
     nxt = [0] * (n+1)
     for i in range(n+1):
         if i==0:
@@ -58,27 +56,21 @@ def part2(input_str):
         elif i>=1 and i<=8:
             nxt[labels[i-1]] = labels[i]
         elif i==9:
-            nxt[labels[8]] = labels[0]
+            nxt[labels[8]] = i+1 
         elif i==n:
-            nxt[i-1] = labels[0] 
+            nxt[i] = labels[0] 
         else:
             nxt[i] = i+1
-
-    print(list(enumerate(nxt)))
     current = labels[0]
     for i in range(m):
-        print(current)
-        print(to_str(nxt,current))
         p1 = nxt[current]
         p2 = nxt[p1]
         p3 = nxt[p2]
-        print(p1,p2,p3)
         nxt[current] = nxt[p3]
         p = [p1,p2,p3]
         dest  = current
         while dest in p or dest==current:
             if dest == 1:
-                print("Wrap around!")
                 dest = n
             else:
                 dest-=1
@@ -86,15 +78,12 @@ def part2(input_str):
         nxt[p3] = nxt_new
         nxt[dest] = p1
         current = nxt[current]
-    print(to_str(nxt,1))
-
     n1 = nxt[1]
     n2 = nxt[n1]
-    print(n1,n2)
     return n1*n2
 
 
 # imagine 10 11 12 ... 10000000 at the end
 blocks = "247819356"
-print(part1(blocks))
-print(part2("389125467"))
+print("Part 1: %s"%part1(blocks))
+print("Part 2: %i"%part2(blocks))
